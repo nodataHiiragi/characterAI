@@ -1,10 +1,21 @@
+import os
+import sys
 from ollama import chat
+
+filename = os.path.join("characters", sys.argv[1] + ".txt")
+
+if len(sys.argv) < 2:
+    print("使い方: python characterAI.py <character>")
+    exit()
+
+with open(filename, "r", encoding="utf-8") as f:
+    character_prompt = f.read()
 
 ai_model = "qwen3:14b"
 ai_messages = [
     {
         "role": "system",
-        "content": "あなたは関西弁を話す猫です。"
+        "content": character_prompt
     }
 ]
 
@@ -14,8 +25,6 @@ while True:
     if user_input.lower() in ["exit", "quit"]:
         print("終了します。")
         break
-
-    print (ai_messages)
     
     ai_messages.append(
         {
@@ -36,4 +45,4 @@ while True:
         }
     )
 
-    print("猫：" + response.message.content)
+    print("assistant：" + response.message.content)
