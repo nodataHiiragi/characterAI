@@ -1,12 +1,22 @@
 import os
-import sys
 from ollama import chat
 
-filename = os.path.join("characters", sys.argv[1] + ".txt")
+character_list = os.listdir("characters")
 
-if len(sys.argv) < 2:
-    print("使い方: python characterAI.py <character>")
+print("利用可能なキャラクター:")
+for i, character in enumerate(character_list):
+    print(str(i + 1) + ". " + character.replace(".txt", ""))
+
+character_number = input("キャラクター選択:")
+character_name = character_list[int(character_number) - 1].replace(".txt", "")
+
+try:
+    character_index = int(character_number) - 1
+except ValueError:
+    print("キャラクター番号を入力してください")
     exit()
+
+filename = os.path.join("characters", character_list[character_index])
 
 with open(filename, "r", encoding="utf-8") as f:
     character_prompt = f.read()
@@ -45,4 +55,4 @@ while True:
         }
     )
 
-    print("assistant：" + response.message.content)
+    print(f"{character_name}：" + response.message.content)
