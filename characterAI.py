@@ -45,9 +45,7 @@ while True:
 
         for file in files:
             if file.startswith(str(d)):
-                num = file.split("_")[1]
-                num = num.replace(".txt", "")
-                today_numbers.append(int(num))
+                today_numbers.append(int(file.split("_")[1].replace(".txt", "")))
 
         if len(today_numbers) == 0:
             num = 1
@@ -68,11 +66,13 @@ while True:
             "content": user_input
         }
     )
-    
+
+    print("AI応答待ち...")
     response = chat(
         model=ai_model,
         messages=ai_messages
     )
+    print("AI応答受信")
 
     ai_messages.append(
         {
