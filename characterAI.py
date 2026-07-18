@@ -1,8 +1,6 @@
 import os
-import json
-import datetime
 from ollama import chat
-from log import save_log
+from log import save_log, load_log
 
 character_list = os.listdir("characters")
 
@@ -20,35 +18,14 @@ except ValueError:
 
 character_name = character_list[character_index].replace(".txt", "")
 
-d = datetime.date.today()
-log_dir = f"logs/{character_name}"
-
 filename = os.path.join("characters", character_list[character_index])
-json_files = []
-
-os.makedirs(log_dir, exist_ok=True)
-
-for file in os.listdir(log_dir):
-    if file.endswith(".json"):
-        json_files.append(file)
 
 with open(filename, "r", encoding="utf-8") as f:
     character_prompt = f.read()
 
 ai_model = "qwen3:14b"
-
-if len(json_files) == 0:
-    ai_messages = [
-        {
-            "role": "system",
-            "content": character_prompt
-        }
-    ]
-else:
-    latest = max(json_files)
-
-    with open(os.path.join(log_dir, latest), "r", encoding="utf-8") as f:
-        ai_messages = json.load(f)
+# 会話ログを読み込む
+ai_messages = load_log(character_name, character_prompt)
 
 
 while True:
@@ -56,30 +33,8 @@ while True:
 
     if user_input.lower() in ["exit", "quit"]:
         print("終了します。")
+        # 会話ログを保存
         save_log(character_name, ai_messages)
-        #os.makedirs(log_dir, exist_ok=True)
-        #files = os.listdir(log_dir)
-
-        #today_numbers =[]
-
-        #for file in files:
-        #    if file.startswith(str(d)) and file.endswith(".txt"):
-        #        today_numbers.append(int(file.split("_")[1].replace(".txt", "")))
-
-
-        #if len(today_numbers) == 0:
-        #    num = 1
-        #else:
-        #    num = max(today_numbers) + 1
-
-        #with open(f"{log_dir}/{d}_{num:03}.txt", "w", encoding="utf-8") as f:
-        #    for message in ai_messages:
-        #        if message["role"] == "user":
-        #            f.write(f"あなた: {message['content']}\n")
-        #        elif message["role"] == "assistant":
-        #            f.write(f"{character_name}: {message['content']}\n")
-        #with open(f"{log_dir}/{d}_{num:03}.json", "w", encoding="utf-8") as f:
-        #    json.dump(ai_messages, f, ensure_ascii=False, indent=4)
         break
     
     ai_messages.append(

@@ -37,3 +37,32 @@ def save_log(character_name, ai_messages):
     # ログファイルに会話をJSON形式で保存
     with open(base_filename + ".json", "w", encoding="utf-8") as f:
         json.dump(ai_messages, f, ensure_ascii=False, indent=4)
+
+# ログを読み込む関数
+def load_log(character_name, character_prompt):
+    log_dir = f"logs/{character_name}"
+
+    # ログディレクトリが存在しない場合は作成
+    os.makedirs(log_dir, exist_ok=True)
+
+    # ログディレクトリ内のJSONファイルを取得
+    json_files = []
+    for file in os.listdir(log_dir):
+        if file.endswith(".json"):
+            json_files.append(file)
+
+    # ログの存在判定
+    if len(json_files) == 0:
+        ai_messages = [
+            {
+                "role": "system",
+                "content": character_prompt
+            }
+        ]
+    else:
+        latest = max(json_files)
+
+        with open(os.path.join(log_dir, latest), "r", encoding="utf-8") as f:
+            ai_messages = json.load(f)
+
+    return ai_messages
