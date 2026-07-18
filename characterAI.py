@@ -1,27 +1,11 @@
 import os
 from ollama import chat
 from log import save_log, load_log
+from character import select_character, load_character
 
-character_list = os.listdir("characters")
-
-print("利用可能なキャラクター:")
-for i, character in enumerate(character_list):
-    print(str(i + 1) + ". " + character.replace(".txt", ""))
-
-character_number = input("キャラクター選択:")
-
-try:
-    character_index = int(character_number) - 1
-except ValueError:
-    print("キャラクター番号を入力してください")
-    exit()
-
-character_name = character_list[character_index].replace(".txt", "")
-
-filename = os.path.join("characters", character_list[character_index])
-
-with open(filename, "r", encoding="utf-8") as f:
-    character_prompt = f.read()
+# キャラクターを選択
+character_name = select_character()
+character_prompt = load_character(character_name)
 
 ai_model = "qwen3:14b"
 # 会話ログを読み込む

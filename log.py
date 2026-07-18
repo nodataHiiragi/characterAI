@@ -65,4 +65,5 @@ def load_log(character_name, character_prompt):
         with open(os.path.join(log_dir, latest), "r", encoding="utf-8") as f:
             ai_messages = json.load(f)
 
+    print(f"読み込んだメッセージ数: {len(ai_messages)}")
     return ai_messages
