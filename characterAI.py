@@ -2,9 +2,11 @@ import os
 from ollama import chat
 from log import save_log, load_log
 from character import select_character, load_character
+from ai import chat_with_ai
 
 # キャラクターを選択
 character_name = select_character()
+# キャラクターのプロンプトを読み込む
 character_prompt = load_character(character_name)
 
 ai_model = "qwen3:14b"
@@ -28,12 +30,7 @@ while True:
         }
     )
 
-    print("AI応答待ち...")
-    response = chat(
-        model=ai_model,
-        messages=ai_messages
-    )
-    print("AI応答受信")
+    response = chat_with_ai(ai_model, ai_messages)
 
     ai_messages.append(
         {
