@@ -40,8 +40,12 @@ while True:
         # 会話ログを保存
         save_log(character_name, ai_messages)
         # 記憶を更新
-        ai_memory = update_memory(ai_memory, extract_memory(ai_model, ai_messages))
-        save_memory(character_name, ai_memory)
+        #ai_memory = update_memory(ai_memory, extract_memory(ai_model, ai_messages))
+        #save_memory(character_name, ai_memory)
+        ai_memory = extract_memory(ai_model, ai_messages)
+
+        print("記憶候補:")
+        print(json.dumps(ai_memory, ensure_ascii=False, indent=4))
         break
 
     # ユーザーの入力を会話ログに追加

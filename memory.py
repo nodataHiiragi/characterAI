@@ -48,7 +48,12 @@ def extract_memory(ai_model, ai_messages):
             "role": "user",
             "content": 
             "以下の会話から「ユーザーについて長期的に覚えておく価値がある情報」だけを抽出してください。\n"
+            "まだ長期記憶として確定してはいけません。\n\n"
+
             "出力はJSONオブジェクトのみで返してください。\n"
+            "説明は禁止。\n"
+            "Markdownは禁止。\n"
+            
             "保存してよい情報例\n\n"
             "・好き嫌い\n"
             "・趣味\n"
@@ -58,6 +63,7 @@ def extract_memory(ai_model, ai_messages):
             "・価値観\n"
             "・継続中のプロジェクト\n"  
             "・将来の目標\n\n"
+            
             "保存してはいけない情報例\n\n"
             "・AI自身の状態\n"
             "・AIが覚えているという事実\n"
@@ -65,8 +71,11 @@ def extract_memory(ai_model, ai_messages):
             "・一時的な話題\n"
             "・その場の質問\n"
             "・推測\n"
-            "説明は禁止。\n"
-            "Markdownは禁止。\n"
+
+
+            "ユーザーが明確に発言した事実だけを記憶してください。\n"
+            "発言から推測できるだけの情報は記憶しないでください。\n"
+
             "情報がない場合は{}だけ返してください\n\n"
             + json.dumps(ai_messages, ensure_ascii=False, indent=4)
         }
@@ -78,9 +87,9 @@ def extract_memory(ai_model, ai_messages):
     )
 
     try:
-        memory = json.loads(response.message.content)
+        memory_candidates = json.loads(response.message.content)
     except json.JSONDecodeError:
         print("記憶の抽出に失敗しました。空の記憶を返します。")
-        memory = {}
+        memory_candidates = {}
 
-    return memory
+    return memory_candidates
